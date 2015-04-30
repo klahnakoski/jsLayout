@@ -21,11 +21,11 @@ Construction lines simplify layout by acting as a common reference for visual el
 
 Looking at the `layout` attribute:
 
-* `bottom=page.bottom` - Bottom- of this element is congruent to the bottom of `page` 
+* `bottom=page.bottom` - bottom of this element is congruent to the bottom of `page` 
 * `right=page.right` - right of this element is congruent to the right of `page`
 * `left=page.left` - left of this element is congruent to the left of `page`
 
-We can solve these three equations to conclude the width is 100% of page width, and the `#footer` is always at the bottom of the `page`.
+We `layout.js` will solve these three equations to conclude the width is 100% of page width, and the `#footer` is always at the bottom of the `page`.
 
 **Example: Center my chart in `#container`**
 
@@ -106,7 +106,7 @@ In theory, to do this, you should only need to declare just three facts:
 
 [The CSS solution is incredibly long!](http://matthewjamestaylor.com/blog/keeping-footers-at-the-bottom-of-the-page)  Kudos to the author for presenting this solution so the masses do not have to discover this on their own.  Here are the additional facts we must add to our program logic to align our footer: 
 
-* Make an artificial `#container` to act as footer parent
+* Make an artificial `#container` to act as `#footer` of parent
 * Markup `#container` as `position:relative` 
 * Markup `#footer` as `position:absolute`
 * Ensure `#footer` is child of `#container` 

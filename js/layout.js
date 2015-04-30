@@ -1,8 +1,6 @@
-importScript("../util/aUtil.js");
-importScript("../collections/aRelation.js");
-importScript("../collections/aArray.js");
 
 var layout_all;
+
 
 (function(){
 	var DELAY_JAVASCRIPT=200;
@@ -19,30 +17,30 @@ var layout_all;
 		});
 
 		//FIND THE STATIC RELATIONS (USING CSS, WHEN POSSIBLE)
-		var mapSelf2Parents = {"v": new Relation(), "h": new Relation()};
-		var mapSelf2TrueParents = new Relation();
+		var mapSelf2Parents = {"v": {}, "h": {}};
+		var mapSelf2TrueParents = {};
 		var mapSelf2StaticFormula = {};
-		allFormula.forall(function(e){
-			mapSelf2Parents[e.d].add(e.l.id, e.r.id);
-			mapSelf2TrueParents.add(e.l.id, e.r.id);
+		forall(allFormula, function(e){
+			if (!mapSelf2Parents[e.d][e.l.id]) mapSelf2Parents[e.d][e.l.id]=[];
+			if (mapSelf2Parents[e.d][e.l.id].indexOf(e.r.id)==-1)	mapSelf2Parents[e.d][e.l.id].push(e.r.id);
+			if (!mapSelf2TrueParents[e.l.id]) mapSelf2TrueParents[e.l.id]=[];
+			if (mapSelf2TrueParents[e.l.id].indexOf(e.r.id)==-1) mapSelf2TrueParents[e.l.id].push(e.r.id);
 		});
 
 		//PICK A SINGLE PARENT FOR EACH ELEMENT
-		mapSelf2TrueParents.domain().forall(function(selfID){
-			var parents = mapSelf2TrueParents.get(selfID);
+		forAllKey(mapSelf2TrueParents, function(selfID, parents){
 			var self = $("#" + selfID);
 			var parent = $("#" + parents[0]);
 			prep(self, parent);
 		});
 
-		Map.forall(mapSelf2Parents, function(dim, rel){
-			rel.domain().forall(function(selfID){
-				var parents = rel.get(selfID);
+		forAllKey(mapSelf2Parents, function(dim, rel){
+			forAllKey(rel, function(selfID, parents){
 				if (parents.length == 1) {
-					allFormula.forall(function(e){
+					forall(allFormula, function(e){
 						if (e.d != dim || e.l.id != selfID) return;
 						if (!mapSelf2StaticFormula[selfID]) mapSelf2StaticFormula[selfID] = {"v": [], "h": []};
-						mapSelf2StaticFormula[selfID][dim].append(e);
+						mapSelf2StaticFormula[selfID][dim].push(e);
 					});
 				} else {
 					mapSelf2DynamicFormula[dim][selfID] = allFormula.map(function(e){
@@ -51,7 +49,7 @@ var layout_all;
 						if (e.r.id == parents[0]) {
 							//WE SHOULD PREFER THE TOP-LEFT TO BE THE STATIC PARENT?
 							if (!mapSelf2StaticFormula[selfID]) mapSelf2StaticFormula[selfID] = {"v": [], "h": []};
-							mapSelf2StaticFormula[selfID][dim].append(e);
+							mapSelf2StaticFormula[selfID][dim].push(e);
 						}//endif
 
 						return e;
@@ -62,9 +60,9 @@ var layout_all;
 
 		//FIND PURE CSS SOLUTIONS
 		//FIND CSS WIDTH/HEIGHT DESIGNATIONS
-		Map.forall(mapSelf2StaticFormula, function(selfID, rel){
+		forAllKey(mapSelf2StaticFormula, function(selfID, rel){
 			var self = $("#" + selfID);
-			Map.forall(dimMap, function(dim, mapper){
+			forAllKey(dimMap, function(dim, mapper){
 				var formula = rel[dim];
 				if (formula.length == 0) {
 					//DEFAULT IS TO CENTER EVERYTHING
@@ -112,7 +110,7 @@ var layout_all;
 		//POSSIBLE TOPOLOGICAL ORDERING
 		//APPLY ALL FORMULA
 		positionDynamic();
-	}//function
+	};//function
 
 	function translate(amount, dim){
 		if (dim == "h") {
@@ -141,8 +139,8 @@ var layout_all;
 	function positionDynamic(){
 		//COMPILE FUNCTION TO HANDLE RESIZE
 		var layoutFunction = "function(){\n";
-		Map.forall(dimMap, function(dim, mapper){
-			Map.forall(mapSelf2DynamicFormula[dim], function(selfID, formula){
+		forAllKey(dimMap, function(dim, mapper){
+			forAllKey(mapSelf2DynamicFormula[dim], function(selfID, formula){
 				if (formula.length == 2) {
 					var points = formula.map(function(e){
 						var parent = $("#" + e.r.id);
@@ -184,7 +182,7 @@ var layout_all;
 		}//endif
 
 		if (self.parent().attr("id") != parent.attr("id")) {
-			parent.append(self);
+			parent.push(self);
 		}//endif
 		self.css({"position": "absolute"})
 	}//method
@@ -236,7 +234,7 @@ var layout_all;
 	};
 
 	function parseLayout(self, layout){
-		layout.split(";").forall(function(f){
+		forall(layout.split(";"), function(f){
 			parseFormula(self, f);
 		});
 	}//function
@@ -258,9 +256,9 @@ var layout_all;
 		var coord = canonical[lhs];
 		rhs = parseRHS(self, rhs);
 
-		["v", "h"].forall(function(d){
+		forall(["v", "h"], function(d){
 			if (coord[d] !== undefined) {
-				allFormula.append({
+				allFormula.push({
 					"l": {"id": selfID, "coord": coord[d]},
 					"r": {"id": rhs.id, "coord": rhs.coord[d]},
 					"d": d
@@ -273,7 +271,7 @@ var layout_all;
 	function getID(element){
 		var output = element.attr('id');
 		if (output === undefined) {
-			output = "uid_" + Util.UID();
+			output = "uid_" + UID();
 			element.attr('id', output);
 		}//endif
 		return output;
@@ -343,7 +341,7 @@ var layout_all;
 			for (var u = 0; u < i; u++) {
 				if (g.l.coord == formula[u].l.coord && g.r.coord == formula[u].r.coord) g = undefined;
 			}//for
-			if (g) output.append(g);
+			if (g) output.push(g);
 		}//for
 		return output;
 	}//function
@@ -365,5 +363,33 @@ var layout_all;
 		}//function
 		return output;
 	}//function
+
+	function forall(self, func){
+		for (var i = 0; i < self.length; i++) {
+			func(self[i], i, self);
+		}//for
+		return self;
+	}//function
+
+	function forAllKey(map, func){
+		//func MUST ACCEPT key, value PARAMETERS
+		var keys=Object.keys(map);
+		for(var i=keys.length;i--;){
+			var key=keys[i];
+			var val=map[key];
+			if (val!==undefined) func(key, val);
+		}//for
+	}//function
+
+	var UID;
+	(function(){
+		var next=0;
+
+		UID=function(){
+			next++;
+			return next;
+		};//method
+	})();
+
 
 })();
