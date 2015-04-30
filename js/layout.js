@@ -43,7 +43,7 @@ var layout_all;
 						mapSelf2StaticFormula[selfID][dim].push(e);
 					});
 				} else {
-					mapSelf2DynamicFormula[dim][selfID] = allFormula.map(function(e){
+					mapSelf2DynamicFormula[dim][selfID] = map(allFormula, function(e){
 						if (e.d != dim || e.l.id != selfID) return;
 
 						if (e.r.id == parents[0]) {
@@ -142,7 +142,7 @@ var layout_all;
 		forAllKey(dimMap, function(dim, mapper){
 			forAllKey(mapSelf2DynamicFormula[dim], function(selfID, formula){
 				if (formula.length == 2) {
-					var points = formula.map(function(e){
+					var points = map(formula, function(e){
 						var parent = $("#" + e.r.id);
 						var p = parent.offset();
 						var code;
@@ -182,7 +182,7 @@ var layout_all;
 		}//endif
 
 		if (self.parent().attr("id") != parent.attr("id")) {
-			parent.push(self);
+			parent.append(self);
 		}//endif
 		self.css({"position": "absolute"})
 	}//method
@@ -391,5 +391,14 @@ var layout_all;
 		};//method
 	})();
 
+	function map(arr, func){
+		var output=[];
+		for(var i=0;i<arr.length;i++){
+			var v=func(arr[i], i);
+			if (v===undefined || v==null) continue;
+			output.push(v);
+		}//for
+		return output;
+	}//method
 
 })();
