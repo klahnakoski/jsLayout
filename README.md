@@ -54,7 +54,7 @@ The real power of **jsLayout** comes from establishing dependencies between mult
 	<body>
 		<div id="sidebar" class="sidebar" layout="tl=page.tl;bottom=page.bottom"></div>
 		<div id="content" layout="tl=sidebar.tr;br=page.br></div>
-	<body>
+	</body>
 ```
 
 
