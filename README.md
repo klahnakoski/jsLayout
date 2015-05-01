@@ -1,12 +1,13 @@
-layout.js
-=========
+jsLayout
+========
 
 Stop using CSS for page layout!
 
 Problem
 -------
 
-You want your HTML elements to line up visually: To do that, you must write multiple CSS classes, which may share magic numbers, and use them specially in HTML elements.  Additionally, your logical HTML must be rearranged to reflect the visual alignments you desire.  
+You want your HTML elements to line up visually: To do that, you must write multiple CSS classes, which may share magic numbers, and use them specially in HTML elements.  Additionally, your logical HTML must be arranged to reflect the visual alignments you desire.   For more, see [CSS is bad for layout](#appendix-a-css-is-bad-for-layout) below.
+
 
 Solution
 --------
@@ -16,16 +17,16 @@ Construction lines simplify layout by acting as a common reference for visual el
 **Example: I want a footer at bottom of page**
 
 ```html
-	<div id="footer" style="height:30px" layout="bottom=page.bottom; right=page.right; left=page.left">Footer</div>
+	<div id="footer" style="height:30px" layout="bottom=page.bottom;left=page.left;right=page.right">Footer</div>
 ```
 
 Looking at the `layout` attribute:
 
 * `bottom=page.bottom` - bottom of this element is congruent to the bottom of `page` 
-* `right=page.right` - right of this element is congruent to the right of `page`
 * `left=page.left` - left of this element is congruent to the left of `page`
+* `right=page.right` - right of this element is congruent to the right of `page`
 
-We `layout.js` will solve these three equations to conclude the width is 100% of page width, and the `#footer` is always at the bottom of the `page`.
+**jsLayout** will solve these three equations to conclude the width is 100% of page width, and the `#footer` is always at the bottom of the `page`.
 
 **Example: Center my chart in `#container`**
 
@@ -42,6 +43,21 @@ You may use the first letter of each line in vertical/horizontal pairs to simply
 ```html
 	<div id="chart" class="chart" layout="mc=container.mc"></div>
 ```
+Beyond CSS
+----------
+
+The real power of **jsLayout** comes from establishing dependencies between multiple elements, and not just parents.  This solves the problem of element alignment between any number of disparate elements.  It also allows you to arrange the HTML elements in logical order, that best suites your frame work, and separately arrange elements for visual appeal. 
+
+**Example: Have content fill the area to right of sidebar**
+
+```html
+	<body>
+		<div id="sidebar" class="sidebar" layout="tl=page.tl;bottom=page.bottom"></div>
+		<div id="content" layout="tl=sidebar.tr;br=page.br></div>
+	<body>
+```
+
+
 
 Syntax
 ------
