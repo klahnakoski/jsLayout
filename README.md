@@ -135,5 +135,5 @@ These extra declarations are required by CSS and not the problem domain!  These 
 Appendix B: Non-Solution
 ------------------------
 
-Meta-CSS languages add a layer on top of CSS to solve the magic number problem; allowing the programmer to assign them to variables.  The end result reduces redundancy, but is more abstract, and more complicated!  
+CSS-preprocessors solve the magic number problem with variables, and improve the clarity of styling code, but do not solve the layout problem.
 
