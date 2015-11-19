@@ -108,6 +108,8 @@ The library translates the simple equations into more-complex combination of CSS
 In the cases where elements refer to lines from more than one element; a Javascript function is run on `window.resize()` to correct the widths.   
 
 
+
+
 Appendix A: CSS is bad for layout
 ---------------------------------
 
@@ -130,7 +132,7 @@ In theory, to do this, you should only need to declare just three facts:
 * Markup `body` to `height:100%`
 * Pass a magic number (height of footer) to the sister elements (`#body`, in this case) for margins
 
-These extra declarations are required by CSS and not the problem domain!  These extra declarations are what make CSS needlessly complicated.  The footer is a good example of how hard it is to position any element on a page.
+These extra declarations are required by CSS and not the problem domain!  These extra declarations are what makes CSS needlessly complicated.  The footer is a good example of how hard it is to position any element on a page.
 
 Appendix B: Non-Solution
 ------------------------

@@ -1,14 +1,15 @@
 
-var layout_all;
+var layoutAll;
 
 
 (function(){
-	var DELAY_JAVASCRIPT=200;
+	var DELAY_JAVASCRIPT = 200;
+	var DEBUG = true;
 
 	var allFormula = [];
 	var mapSelf2DynamicFormula = {"v": {}, "h": {}};
 
-	layout_all = function layout_all(){
+	layoutAll = function layout_all(){
 		//GRASP ALL LAYOUT FORMULA
 		$("[layout]").each(function(){
 			var self = $(this);
@@ -80,6 +81,14 @@ var layout_all;
 					if (formula[0].l.coord == formula[1].l.coord && formula[0].r.coord != formula[1].r.coord) {
 						Log.error("Constraint is wrong");
 					}//endif
+
+					if (formula[0].l.coord > formula[0].r.coord){
+						var temp = formula[0];
+						formula[0] = formula[1];
+						formula[1] = temp;
+					}//endif
+
+					self.css("box-sizing", "border-box");
 					self[mapper.width]((100 * (formula[0].r.coord - formula[1].r.coord) / (formula[0].l.coord - formula[1].l.coord)) + "%");
 
 					if (formula[0].l.coord == formula[0].r.coord) {
@@ -156,18 +165,21 @@ var layout_all;
 
 						return {
 							"l": e.l.coord,
-//						"r": p[mapper.left] + (parent[mapper.outerWidth]() * e.r.coord),
 							"rcode": code
 						};
 					});
 
-					layoutFunction += '$("#' + selfID + '").' + mapper.width + '(((' + points[0].rcode + '-' + points[1].rcode + ')/' + (points[0].l - points[1].l) + ')+"px");\n';
+					layoutFunction += '$("#' + selfID + '").' + mapper.outerWidth + '(((' + points[0].rcode + '-' + points[1].rcode + ')/' + (points[0].l - points[1].l) + ')+"px");\n';
 
-//				$("#"+selfID)[mapper.width](((points[0].r-points[1].r)/(points[0].l-points[1].l))+"px");
 				}//endif
 			});
 		});
 		layoutFunction += "};";
+
+		if (DEBUG){
+			Log.note("dynamicLayout="+layoutFunction)
+		}//endif
+
 		var dynamicLayout;
 		eval("dynamicLayout=" + layoutFunction);
 		dynamicLayout();
@@ -177,7 +189,7 @@ var layout_all;
 
 	function prep(self, parent){
 		var p = parent.css("position");
-		if (p === undefined) {
+		if (p === undefined || p=="static") {
 			parent.css({"position": "relative"});
 		}//endif
 
