@@ -99,21 +99,25 @@ There are really four formula here:
 
 Vertically, these formula are solved to conclude the sidebar is 100% of the window height, it will not move while scrolling (because the construction lines of the window do not move).  Horizontally, the left is flush with the left side of window, and right side of `#sidebar` is at 1/3 of the way across the screen.
 
-
 How does it work?
 -----------------
 
 The library translates the simple equations into more-complex combination of CSS, absolute/relative indicators and parent/child element relationships.  This means, for most layout, the markup is done once, and left to the browser to use native code for placement and rendering.
 
-In the cases where elements refer to lines from more than one element; a Javascript function is run on `window.resize()` to correct the widths.   
+In the cases where elements refer to lines from more than one element; `dynamicLayout()` is run on `window.resize()` to correct the widths.   
 
+Limitations
+-----------
 
+* **jsLayout's** construction lines include the borders and padding.  Layout of child elements using the parent construction lines will result in the children covering the padding and border of the parent.  It is better to use an intermediate `<div  style="height:100%;width:100%">`, and have the children refer to the construction lines of that intermediate `div` instead.
+* Don't use **jsLayout** when CSS flow layout works fine.
+ *Animation of layout is not handled well:  Be sure to call `dynamicLayout()` when your animation is done so all the elements get properly re-sized, albeit late.   
 
 
 Appendix A: CSS is bad for layout
 ---------------------------------
 
-CSS with its flow-layout box model is not suited for laying out most web pages.  HTML tables are still better at managing vertical and horizontal alignment, despite the years of standards committee work.
+CSS, with its flow-layout box model, is not suited for laying out most web pages.  HTML tables are still better at managing vertical and horizontal alignment, despite the years of standards committee work.
 
 **Example: I want a footer at bottom of page**
 
