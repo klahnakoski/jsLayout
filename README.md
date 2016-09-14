@@ -80,7 +80,7 @@ Line (and Point) References
 
 Every element has common, named, construction lines: Vertical lines are `top`, `middle` and `bottom`.  Horizontal lines are `left`, `center` and `right`.  You may also refer to a vertical/horizontal pair (a point) by using the first letter of each respectively:
 
-* `tl` - top-right corner
+* `tl` - top-left corner
 * `mc` - middle-center of element
 * `br` - bottom-right corner
 
